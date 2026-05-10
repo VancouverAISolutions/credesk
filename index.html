@@ -1,16 +1,892 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CREDesk — Commercial Real Estate Intelligence</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CREDesk — Commercial Real Estate Intelligence</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
+  <style>
+    :root { --gold: #f59e0b; --navy: #0f172a; --navy2: #1e293b; --navy3: #334155; }
+    body { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', system-ui, sans-serif; }
+    .gold { color: #f59e0b; }
+    .bg-navy { background-color: #0f172a; }
+    .bg-navy2 { background-color: #1e293b; }
+    .bg-navy3 { background-color: #334155; }
+    .border-navy3 { border-color: #334155; }
+    .text-gold { color: #f59e0b; }
+    .bg-gold { background-color: #f59e0b; }
+    .border-gold { border-color: #f59e0b; }
+    .hover-gold:hover { color: #f59e0b; }
+    .card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; }
+    .kanban-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.2s; }
+    .kanban-card:hover { border-color: #f59e0b; }
+    .badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+    .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: #1e293b; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s; color: #94a3b8; font-size: 14px; font-weight: 500; }
+    .sidebar-item:hover { background-color: #1e293b; color: #e2e8f0; }
+    .sidebar-item.active { background-color: #1e293b; color: #f59e0b; border-left: 3px solid #f59e0b; }
+    .stat-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; border-radius: 12px; padding: 20px; }
+    .table-row:hover { background-color: #1e293b; }
+    input[type="text"], input[type="search"], select { background-color: #1e293b; border: 1px solid #334155; color: #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 14px; outline: none; }
+    input:focus, select:focus { border-color: #f59e0b; }
+    .btn-gold { background-color: #f59e0b; color: #0f172a; font-weight: 700; border-radius: 8px; padding: 8px 18px; font-size: 13px; cursor: pointer; transition: opacity 0.15s; border: none; }
+    .btn-gold:hover { opacity: 0.9; }
+    .btn-outline { background: transparent; border: 1px solid #334155; color: #94a3b8; font-weight: 500; border-radius: 8px; padding: 8px 18px; font-size: 13px; cursor: pointer; transition: all 0.15s; }
+    .btn-outline:hover { border-color: #f59e0b; color: #f59e0b; }
+    .ai-callout { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid #f59e0b44; border-left: 3px solid #f59e0b; border-radius: 8px; padding: 16px; }
+    .progress-bar { height: 6px; border-radius: 3px; background-color: #334155; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #f59e0b, #fcd34d); }
+    @media (max-width: 1023px) {
+      .sidebar-desktop { display: none; }
+      .bottom-nav { display: flex; }
+      .main-content { padding-bottom: 72px; }
+    }
+    @media (min-width: 1024px) {
+      .sidebar-desktop { display: flex; }
+      .bottom-nav { display: none; }
+      .main-content { padding-bottom: 0; }
+    }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top: 1px solid #334155; z-index: 50; justify-content: around; }
+    .svg-bar { transition: height 0.4s ease, y 0.4s ease; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useCallback } = React;
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const PIPELINE = {
+  Prospecting: [
+    { id: 1, address: "1200 Robson St, Vancouver", size: "$8.2M", cap: "4.8%", type: "Retail" },
+    { id: 2, address: "555 W Georgia St, Vancouver", size: "$24.5M", cap: "5.1%", type: "Office" },
+    { id: 3, address: "3300 No. 3 Rd, Richmond", size: "$5.9M", cap: "5.6%", type: "Retail" },
+  ],
+  "LOI Sent": [
+    { id: 4, address: "789 Pacific Blvd, Vancouver", size: "$12.1M", cap: "5.3%", type: "Office" },
+    { id: 5, address: "1515 Broadway, Port Coquitlam", size: "$6.7M", cap: "6.0%", type: "Industrial" },
+  ],
+  "Due Diligence": [
+    { id: 6, address: "2200 Boundary Rd, Burnaby", size: "$18.4M", cap: "5.7%", type: "Industrial" },
+    { id: 7, address: "400 Burrard St, Vancouver", size: "$41.0M", cap: "4.5%", type: "Office" },
+  ],
+  "Under Contract": [
+    { id: 8, address: "980 Howe St, Vancouver", size: "$9.8M", cap: "5.2%", type: "Retail" },
+  ],
+  Closed: [
+    { id: 9, address: "1050 W Pender St, Vancouver", size: "$15.3M", cap: "5.4%", type: "Office" },
+    { id: 10, address: "7491 Vantage Way, Delta", size: "$22.6M", cap: "6.1%", type: "Industrial" },
+  ],
+};
+
+const PROPERTIES = [
+  { id: 1, address: "1200 Robson St, Vancouver", type: "Retail", sf: "12,400", price: "$8.2M", cap: "4.8%", status: "Active" },
+  { id: 2, address: "555 W Georgia St, Vancouver", type: "Office", sf: "38,200", price: "$24.5M", cap: "5.1%", status: "Active" },
+  { id: 3, address: "3300 No. 3 Rd, Richmond", type: "Retail", sf: "9,800", price: "$5.9M", cap: "5.6%", status: "Active" },
+  { id: 4, address: "789 Pacific Blvd, Vancouver", type: "Office", sf: "18,900", price: "$12.1M", cap: "5.3%", status: "LOI Sent" },
+  { id: 5, address: "1515 Broadway, Port Coquitlam", type: "Industrial", sf: "24,600", price: "$6.7M", cap: "6.0%", status: "LOI Sent" },
+  { id: 6, address: "2200 Boundary Rd, Burnaby", type: "Industrial", sf: "44,100", price: "$18.4M", cap: "5.7%", status: "Due Diligence" },
+  { id: 7, address: "400 Burrard St, Vancouver", type: "Office", sf: "72,800", price: "$41.0M", cap: "4.5%", status: "Due Diligence" },
+  { id: 8, address: "980 Howe St, Vancouver", type: "Retail", sf: "14,200", price: "$9.8M", cap: "5.2%", status: "Under Contract" },
+  { id: 9, address: "1050 W Pender St, Vancouver", type: "Office", sf: "28,500", price: "$15.3M", cap: "5.4%", status: "Closed" },
+  { id: 10, address: "7491 Vantage Way, Delta", type: "Industrial", sf: "58,000", price: "$22.6M", cap: "6.1%", status: "Closed" },
+  { id: 11, address: "320 Granville St, Vancouver", type: "Office", sf: "31,400", price: "$19.8M", cap: "4.9%", status: "Active" },
+  { id: 12, address: "6180 No. 3 Rd, Richmond", type: "Industrial", sf: "82,000", price: "$34.2M", cap: "5.8%", status: "Active" },
+];
+
+const INVESTORS = [
+  { id: 1, name: "Blackstone RE Partners", contact: "Sarah Chen", email: "s.chen@blackstone.com", phone: "(604) 555-0142", minDeal: "$10M", assets: "Office, Industrial", geo: "Metro Vancouver, Calgary", equity: "$250M", status: "Active" },
+  { id: 2, name: "Oxford Properties Group", contact: "James Whitfield", email: "j.whitfield@oxford.com", phone: "(604) 555-0198", minDeal: "$25M", assets: "Office, Retail", geo: "Vancouver, Toronto, Montreal", equity: "$500M", status: "Active" },
+  { id: 3, name: "Venterra Realty Fund", contact: "Lisa Park", email: "l.park@venterra.ca", phone: "(604) 555-0231", minDeal: "$5M", assets: "Industrial, Retail", geo: "BC Interior, Lower Mainland", equity: "$75M", status: "Reviewing" },
+  { id: 4, name: "BCI Real Estate", contact: "Michael Torres", email: "m.torres@bci.ca", phone: "(250) 555-0087", minDeal: "$50M", assets: "All Classes", geo: "Canada-Wide", equity: "$1B+", status: "Active" },
+  { id: 5, name: "Colliers Capital Partners", contact: "Anna Johansson", email: "a.johansson@colliers.com", phone: "(604) 555-0319", minDeal: "$8M", assets: "Retail, Office", geo: "Lower Mainland, Victoria", equity: "$120M", status: "On Hold" },
+  { id: 6, name: "Pacific Reach Properties", contact: "David Lim", email: "d.lim@pacificreach.ca", phone: "(604) 555-0467", minDeal: "$3M", assets: "Industrial", geo: "Fraser Valley, Richmond", equity: "$45M", status: "Active" },
+];
+
+const MARKET_DATA = {
+  vacancy: [
+    { market: "Downtown\nVancouver", office: 9.2, industrial: 2.1, retail: 5.8 },
+    { market: "Burnaby", office: 7.4, industrial: 1.8, retail: 4.2 },
+    { market: "Richmond", office: 6.1, industrial: 1.4, retail: 6.1 },
+    { market: "Surrey", office: 11.3, industrial: 2.9, retail: 7.4 },
+    { market: "North Shore", office: 8.7, industrial: 3.5, retail: 5.1 },
+    { market: "Tri-Cities", office: 9.8, industrial: 2.2, retail: 6.8 },
+  ],
+  capTrend: [
+    { quarter: "Q1 '24", office: 5.0, industrial: 5.4, retail: 5.2 },
+    { quarter: "Q2 '24", office: 5.1, industrial: 5.5, retail: 5.3 },
+    { quarter: "Q3 '24", office: 5.2, industrial: 5.6, retail: 5.1 },
+    { quarter: "Q4 '24", office: 5.3, industrial: 5.8, retail: 5.2 },
+    { quarter: "Q1 '25", office: 5.2, industrial: 5.9, retail: 5.4 },
+    { quarter: "Q2 '25", office: 5.4, industrial: 6.1, retail: 5.5 },
+  ],
+};
+
+const DOCUMENTS = [
+  { id: 1, name: "LOI - 789 Pacific Blvd.pdf", type: "LOI", property: "789 Pacific Blvd, Vancouver", date: "Apr 28, 2025", size: "248 KB", status: "Executed" },
+  { id: 2, name: "LOI - 1515 Broadway.pdf", type: "LOI", property: "1515 Broadway, Port Coquitlam", date: "May 1, 2025", size: "312 KB", status: "Pending" },
+  { id: 3, name: "PSA - 980 Howe St.pdf", type: "PSA", property: "980 Howe St, Vancouver", date: "May 5, 2025", size: "1.8 MB", status: "Executed" },
+  { id: 4, name: "Phase I ESA - 2200 Boundary.pdf", type: "Due Diligence", property: "2200 Boundary Rd, Burnaby", date: "May 3, 2025", size: "4.2 MB", status: "Complete" },
+  { id: 5, name: "Financial Model - 400 Burrard.xlsx", type: "Due Diligence", property: "400 Burrard St, Vancouver", date: "May 6, 2025", size: "892 KB", status: "Draft" },
+  { id: 6, name: "Title Report - 2200 Boundary.pdf", type: "Due Diligence", property: "2200 Boundary Rd, Burnaby", date: "May 4, 2025", size: "1.1 MB", status: "Complete" },
+  { id: 7, name: "Closing Docs - 1050 W Pender.zip", type: "Closing", property: "1050 W Pender St, Vancouver", date: "Apr 15, 2025", size: "18.4 MB", status: "Archived" },
+  { id: 8, name: "Closing Docs - 7491 Vantage Way.zip", type: "Closing", property: "7491 Vantage Way, Delta", date: "Mar 22, 2025", size: "22.1 MB", status: "Archived" },
+  { id: 9, name: "Lease Abstract - 555 W Georgia.pdf", type: "Due Diligence", property: "555 W Georgia St, Vancouver", date: "May 7, 2025", size: "650 KB", status: "Draft" },
+  { id: 10, name: "Broker Opinion - 3300 No.3 Rd.pdf", type: "LOI", property: "3300 No. 3 Rd, Richmond", date: "May 2, 2025", size: "420 KB", status: "Pending" },
+];
+
+// ─── ICONS ───────────────────────────────────────────────────────────────────
+
+const Icon = ({ name, size = 18, className = "" }) => {
+  const icons = {
+    pipeline: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>,
+    database: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>,
+    investors: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    market: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
+    docs: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
+    analytics: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+    search: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    bell: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+    plus: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    building: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01M12 14h.01M8 14h.01M16 14h.01"/></svg>,
+    download: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+    ai: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>,
+    filter: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>,
+    mail: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+    phone: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+    trending: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+    check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>,
+    clock: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    upload: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
+    folder: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>,
+  };
+  return icons[name] || null;
+};
+
+// ─── STATUS BADGES ───────────────────────────────────────────────────────────
+
+const StatusBadge = ({ status }) => {
+  const styles = {
+    Active: "background:#14532d22;color:#4ade80;border:1px solid #14532d",
+    "LOI Sent": "background:#1e3a5f22;color:#60a5fa;border:1px solid #1e3a5f",
+    "Due Diligence": "background:#3b1f0022;color:#fbbf24;border:1px solid #78350f",
+    "Under Contract": "background:#3b0f4022;color:#c084fc;border:1px solid #4a1060",
+    Closed: "background:#1e1e2e;color:#94a3b8;border:1px solid #334155",
+    Executed: "background:#14532d22;color:#4ade80;border:1px solid #14532d",
+    Complete: "background:#14532d22;color:#4ade80;border:1px solid #14532d",
+    Pending: "background:#1e3a5f22;color:#60a5fa;border:1px solid #1e3a5f",
+    Draft: "background:#3b1f0022;color:#fbbf24;border:1px solid #78350f",
+    Archived: "background:#1e1e2e;color:#94a3b8;border:1px solid #334155",
+    Reviewing: "background:#3b1f0022;color:#fbbf24;border:1px solid #78350f",
+    "On Hold": "background:#1e1e2e;color:#94a3b8;border:1px solid #334155",
+  };
+  return (
+    <span className="badge" style={styles[status] ? Object.fromEntries(styles[status].split(';').map(s => { const [k,v] = s.split(':'); return [k.trim().replace(/-([a-z])/g, (_,c) => c.toUpperCase()), v?.trim()]; }).filter(([k,v]) => k && v)) : {}}>
+      {status}
+    </span>
+  );
+};
+
+const StatusBadgeInline = ({ status }) => {
+  const map = {
+    Active: { bg: "#14532d33", color: "#4ade80", border: "#166534" },
+    "LOI Sent": { bg: "#1e3a8a33", color: "#60a5fa", border: "#1e40af" },
+    "Due Diligence": { bg: "#78350f33", color: "#fbbf24", border: "#92400e" },
+    "Under Contract": { bg: "#4c1d9533", color: "#c084fc", border: "#5b21b6" },
+    Closed: { bg: "#1e293b", color: "#94a3b8", border: "#334155" },
+    Executed: { bg: "#14532d33", color: "#4ade80", border: "#166534" },
+    Complete: { bg: "#14532d33", color: "#4ade80", border: "#166534" },
+    Pending: { bg: "#1e3a8a33", color: "#60a5fa", border: "#1e40af" },
+    Draft: { bg: "#78350f33", color: "#fbbf24", border: "#92400e" },
+    Archived: { bg: "#1e293b", color: "#94a3b8", border: "#334155" },
+    Reviewing: { bg: "#78350f33", color: "#fbbf24", border: "#92400e" },
+    "On Hold": { bg: "#1e293b", color: "#94a3b8", border: "#334155" },
+  };
+  const s = map[status] || map["Closed"];
+  return (
+    <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, borderRadius: 9999, padding: "2px 10px", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap" }}>
+      {status}
+    </span>
+  );
+};
+
+// ─── TYPE BADGE ──────────────────────────────────────────────────────────────
+
+const TypeBadge = ({ type }) => {
+  const map = {
+    Office: { bg: "#1e3a8a33", color: "#60a5fa", border: "#1e40af" },
+    Retail: { bg: "#14532d33", color: "#4ade80", border: "#166534" },
+    Industrial: { bg: "#78350f33", color: "#fbbf24", border: "#92400e" },
+    LOI: { bg: "#1e3a8a33", color: "#60a5fa", border: "#1e40af" },
+    PSA: { bg: "#4c1d9533", color: "#c084fc", border: "#5b21b6" },
+    "Due Diligence": { bg: "#78350f33", color: "#fbbf24", border: "#92400e" },
+    Closing: { bg: "#14532d33", color: "#4ade80", border: "#166534" },
+  };
+  const s = map[type] || map["Office"];
+  return (
+    <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, borderRadius: 4, padding: "2px 8px", fontSize: 11, fontWeight: 600 }}>
+      {type}
+    </span>
+  );
+};
+
+// ─── DEAL PIPELINE ───────────────────────────────────────────────────────────
+
+const DealPipeline = () => {
+  const columns = Object.keys(PIPELINE);
+  const colColors = {
+    Prospecting: "#60a5fa",
+    "LOI Sent": "#fbbf24",
+    "Due Diligence": "#c084fc",
+    "Under Contract": "#f472b6",
+    Closed: "#4ade80",
+  };
+  const totalVal = (col) => {
+    const sum = PIPELINE[col].reduce((acc, d) => acc + parseFloat(d.size.replace('$','').replace('M','')), 0);
+    return `$${sum.toFixed(1)}M`;
+  };
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Deal Pipeline</h2>
+          <p style={{ color: "#94a3b8", fontSize: 14 }}>Track deals from prospecting to close</p>
+        </div>
+        <button className="btn-gold" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Icon name="plus" size={14} /> Add Deal
+        </button>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(200px, 1fr))", gap: 12, overflowX: "auto", paddingBottom: 8 }}>
+        {columns.map(col => (
+          <div key={col} style={{ minWidth: 200 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: colColors[col] }}></div>
+                <span style={{ fontWeight: 700, fontSize: 13, color: "#e2e8f0" }}>{col}</span>
+              </div>
+              <span style={{ background: "#334155", color: "#94a3b8", borderRadius: 9999, padding: "1px 8px", fontSize: 11, fontWeight: 600 }}>
+                {PIPELINE[col].length}
+              </span>
+            </div>
+            <div style={{ background: "#0f172a", borderRadius: 8, padding: 8, minHeight: 120, border: "1px solid #1e293b" }}>
+              {PIPELINE[col].map(deal => (
+                <div key={deal.id} className="kanban-card">
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 8 }}>
+                    <div style={{ color: "#f59e0b", marginTop: 1, flexShrink: 0 }}><Icon name="building" size={14} /></div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", lineHeight: "1.3" }}>{deal.address}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <TypeBadge type={deal.type} />
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#f59e0b" }}>{deal.size}</span>
+                  </div>
+                  <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: 11, color: "#64748b" }}>Cap Rate:</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#94a3b8" }}>{deal.cap}</span>
+                  </div>
+                </div>
+              ))}
+              <div style={{ textAlign: "center", padding: "8px 0", color: "#334155", fontSize: 11, fontWeight: 600 }}>
+                Total: <span style={{ color: "#64748b" }}>{totalVal(col)}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── PROPERTY DATABASE ───────────────────────────────────────────────────────
+
+const PropertyDatabase = () => {
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("All");
+  const filtered = PROPERTIES.filter(p =>
+    (typeFilter === "All" || p.type === typeFilter) &&
+    (p.address.toLowerCase().includes(search.toLowerCase()) || p.type.toLowerCase().includes(search.toLowerCase()))
+  );
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Property Database</h2>
+          <p style={{ color: "#94a3b8", fontSize: 14 }}>{PROPERTIES.length} properties tracked across Metro Vancouver</p>
+        </div>
+        <button className="btn-gold" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Icon name="plus" size={14} /> Add Property
+        </button>
+      </div>
+      <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+        <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
+          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}><Icon name="search" size={14} /></span>
+          <input type="text" placeholder="Search properties..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: "100%", paddingLeft: 34 }} />
+        </div>
+        <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+          <option>All</option><option>Office</option><option>Retail</option><option>Industrial</option>
+        </select>
+      </div>
+      <div style={{ background: "#1e293b", borderRadius: 12, border: "1px solid #334155", overflow: "hidden" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid #334155" }}>
+              {["Address", "Type", "SF", "Asking Price", "Cap Rate", "Status"].map(h => (
+                <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#f59e0b", textTransform: "uppercase", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((p, i) => (
+              <tr key={p.id} className="table-row" style={{ borderBottom: i < filtered.length - 1 ? "1px solid #0f172a" : "none", cursor: "pointer" }}>
+                <td style={{ padding: "12px 16px", fontSize: 13, color: "#e2e8f0", fontWeight: 500 }}>{p.address}</td>
+                <td style={{ padding: "12px 16px" }}><TypeBadge type={p.type} /></td>
+                <td style={{ padding: "12px 16px", fontSize: 13, color: "#94a3b8" }}>{p.sf}</td>
+                <td style={{ padding: "12px 16px", fontSize: 13, fontWeight: 700, color: "#f59e0b" }}>{p.price}</td>
+                <td style={{ padding: "12px 16px", fontSize: 13, color: "#94a3b8" }}>{p.cap}</td>
+                <td style={{ padding: "12px 16px" }}><StatusBadgeInline status={p.status} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {filtered.length === 0 && (
+          <div style={{ textAlign: "center", padding: 40, color: "#64748b" }}>No properties match your search</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ─── INVESTOR NETWORK ─────────────────────────────────────────────────────────
+
+const InvestorNetwork = () => {
+  const [search, setSearch] = useState("");
+  const filtered = INVESTORS.filter(inv =>
+    inv.name.toLowerCase().includes(search.toLowerCase()) ||
+    inv.assets.toLowerCase().includes(search.toLowerCase()) ||
+    inv.geo.toLowerCase().includes(search.toLowerCase())
+  );
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Investor Network</h2>
+          <p style={{ color: "#94a3b8", fontSize: 14 }}>{INVESTORS.length} active investor relationships</p>
+        </div>
+        <button className="btn-gold" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Icon name="plus" size={14} /> Add Investor
+        </button>
+      </div>
+      <div style={{ position: "relative", marginBottom: 20 }}>
+        <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}><Icon name="search" size={14} /></span>
+        <input type="text" placeholder="Search investors, asset classes, geography..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: "100%", paddingLeft: 34 }} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
+        {filtered.map(inv => (
+          <div key={inv.id} className="card" style={{ padding: 20, cursor: "pointer", transition: "border-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.borderColor = "#f59e0b"} onMouseLeave={e => e.currentTarget.style.borderColor = "#334155"}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 15, color: "#f1f5f9", marginBottom: 2 }}>{inv.name}</div>
+                <div style={{ fontSize: 13, color: "#94a3b8" }}>{inv.contact}</div>
+              </div>
+              <StatusBadgeInline status={inv.status} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+              {[
+                { label: "Min Deal Size", val: inv.minDeal, gold: true },
+                { label: "Available Equity", val: inv.equity, gold: true },
+                { label: "Asset Classes", val: inv.assets },
+                { label: "Geography", val: inv.geo },
+              ].map(item => (
+                <div key={item.label} style={{ background: "#0f172a", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 10, color: "#64748b", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>{item.label}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: item.gold ? "#f59e0b" : "#e2e8f0" }}>{item.val}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn-outline" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12, padding: "7px 12px" }}>
+                <Icon name="mail" size={12} /> Email
+              </button>
+              <button className="btn-outline" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontSize: 12, padding: "7px 12px" }}>
+                <Icon name="phone" size={12} /> Call
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── MARKET INTELLIGENCE ─────────────────────────────────────────────────────
+
+const MarketIntelligence = () => {
+  const [activeChart, setActiveChart] = useState("vacancy");
+  const svgW = 640, svgH = 240, padL = 40, padB = 50, padT = 20, padR = 20;
+  const chartW = svgW - padL - padR;
+  const chartH = svgH - padT - padB;
+
+  const VacancyChart = () => {
+    const data = MARKET_DATA.vacancy;
+    const maxVal = 14;
+    const barGroupW = chartW / data.length;
+    const barW = barGroupW * 0.22;
+    const colors = ["#60a5fa", "#f59e0b", "#4ade80"];
+    return (
+      <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width: "100%", maxWidth: svgW }}>
+        {[0, 4, 8, 12].map(v => {
+          const y = padT + chartH - (v / maxVal) * chartH;
+          return (
+            <g key={v}>
+              <line x1={padL} y1={y} x2={svgW - padR} y2={y} stroke="#1e293b" strokeWidth="1" />
+              <text x={padL - 6} y={y + 4} fill="#64748b" fontSize="10" textAnchor="end">{v}%</text>
+            </g>
+          );
+        })}
+        {data.map((d, i) => {
+          const gX = padL + i * barGroupW + barGroupW * 0.12;
+          const vals = [d.office, d.industrial, d.retail];
+          return (
+            <g key={i}>
+              {vals.map((v, j) => {
+                const bH = (v / maxVal) * chartH;
+                return (
+                  <rect key={j} x={gX + j * (barW + 3)} y={padT + chartH - bH} width={barW} height={bH} rx="2" fill={colors[j]} opacity="0.85" />
+                );
+              })}
+              <text x={padL + i * barGroupW + barGroupW / 2} y={svgH - 6} fill="#64748b" fontSize="9" textAnchor="middle">{d.market.replace('\n', ' ')}</text>
+            </g>
+          );
+        })}
+        {colors.map((c, i) => (
+          <g key={i}>
+            <rect x={svgW - padR - 160 + i * 55} y={8} width={10} height={10} rx="2" fill={c} />
+            <text x={svgW - padR - 148 + i * 55} y={17} fill="#94a3b8" fontSize="10">{["Office", "Industrial", "Retail"][i]}</text>
+          </g>
+        ))}
+      </svg>
+    );
+  };
+
+  const CapRateChart = () => {
+    const data = MARKET_DATA.capTrend;
+    const minCap = 4.8, maxCap = 6.3;
+    const range = maxCap - minCap;
+    const getY = v => padT + chartH - ((v - minCap) / range) * chartH;
+    const getX = i => padL + (i / (data.length - 1)) * chartW;
+    const lines = [
+      { key: "office", color: "#60a5fa", label: "Office" },
+      { key: "industrial", color: "#f59e0b", label: "Industrial" },
+      { key: "retail", color: "#4ade80", label: "Retail" },
+    ];
+    return (
+      <svg viewBox={`0 0 ${svgW} ${svgH}`} style={{ width: "100%", maxWidth: svgW }}>
+        {[5.0, 5.5, 6.0].map(v => {
+          const y = getY(v);
+          return (
+            <g key={v}>
+              <line x1={padL} y1={y} x2={svgW - padR} y2={y} stroke="#1e293b" strokeWidth="1" />
+              <text x={padL - 6} y={y + 4} fill="#64748b" fontSize="10" textAnchor="end">{v}%</text>
+            </g>
+          );
+        })}
+        {lines.map(({ key, color, label }, li) => {
+          const pts = data.map((d, i) => `${getX(i)},${getY(d[key])}`).join(" ");
+          return (
+            <g key={key}>
+              <polyline points={pts} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" />
+              {data.map((d, i) => (
+                <circle key={i} cx={getX(i)} cy={getY(d[key])} r="4" fill={color} stroke="#0f172a" strokeWidth="1.5" />
+              ))}
+              <rect x={svgW - padR - 160 + li * 60} y={8} width={10} height={3} rx="1.5" fill={color} />
+              <text x={svgW - padR - 148 + li * 60} y={17} fill="#94a3b8" fontSize="10">{label}</text>
+            </g>
+          );
+        })}
+        {data.map((d, i) => (
+          <text key={i} x={getX(i)} y={svgH - 6} fill="#64748b" fontSize="9" textAnchor="middle">{d.quarter}</text>
+        ))}
+      </svg>
+    );
+  };
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Market Intelligence</h2>
+          <p style={{ color: "#94a3b8", fontSize: 14 }}>Metro Vancouver CRE market analytics — Q2 2025</p>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[{ id: "vacancy", label: "Vacancy" }, { id: "cap", label: "Cap Rates" }].map(tab => (
+            <button key={tab.id} onClick={() => setActiveChart(tab.id)} style={{ padding: "7px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.15s", background: activeChart === tab.id ? "#f59e0b" : "#1e293b", color: activeChart === tab.id ? "#0f172a" : "#94a3b8", border: `1px solid ${activeChart === tab.id ? "#f59e0b" : "#334155"}` }}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="card" style={{ padding: 24, marginBottom: 20 }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: "#e2e8f0", marginBottom: 16 }}>
+          {activeChart === "vacancy" ? "Vacancy Rates by Submarket (%)" : "Cap Rate Trends by Asset Class (%)"}
+        </h3>
+        {activeChart === "vacancy" ? <VacancyChart /> : <CapRateChart />}
+      </div>
+
+      <div className="ai-callout">
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+          <div style={{ background: "#f59e0b22", borderRadius: 8, padding: 8, flexShrink: 0 }}>
+            <Icon name="ai" size={18} className="" style={{ color: "#f59e0b" }} />
+            <span style={{ color: "#f59e0b" }}>✦</span>
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, color: "#f59e0b", fontSize: 13, marginBottom: 6 }}>AI Market Insight</div>
+            <p style={{ color: "#cbd5e1", fontSize: 13, lineHeight: "1.6", marginBottom: 8 }}>
+              Industrial vacancy in Metro Vancouver continues to tighten despite rising new supply, now at <strong style={{ color: "#f59e0b" }}>1.4–2.9%</strong> across submarkets — among the lowest in North America. Cap rate compression in the industrial sector has decelerated, with rates stabilizing around <strong style={{ color: "#f59e0b" }}>5.8–6.1%</strong> as buyers adjust to higher financing costs.
+            </p>
+            <p style={{ color: "#cbd5e1", fontSize: 13, lineHeight: "1.6" }}>
+              <strong style={{ color: "#e2e8f0" }}>Opportunity signal:</strong> Downtown Vancouver office vacancy at <strong style={{ color: "#f59e0b" }}>9.2%</strong> — elevated but stabilizing. Well-leased Class A assets continue to trade at sub-5% cap rates. Consider accelerating due diligence on <strong style={{ color: "#e2e8f0" }}>400 Burrard St</strong> before competing bids emerge.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginTop: 20 }}>
+        {[
+          { label: "Overall CRE Transaction Volume", val: "$2.1B", sub: "Q1 2025 Metro Vancouver", delta: "+8.4% YoY", up: true },
+          { label: "Industrial Vacancy Rate", val: "1.8%", sub: "Metro Vancouver avg.", delta: "-0.3% QoQ", up: true },
+          { label: "Office Avg. Cap Rate", val: "5.2%", sub: "Class A Downtown", delta: "+0.2% QoQ", up: false },
+          { label: "Retail Avg. Asking Rent", val: "$42/SF", sub: "Ground-floor retail", delta: "+1.8% YoY", up: true },
+        ].map(item => (
+          <div key={item.label} className="stat-card">
+            <div style={{ fontSize: 10, color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>{item.label}</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#f59e0b", marginBottom: 2 }}>{item.val}</div>
+            <div style={{ fontSize: 11, color: "#64748b", marginBottom: 6 }}>{item.sub}</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: item.up ? "#4ade80" : "#f87171" }}>{item.delta}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── DOCUMENT VAULT ──────────────────────────────────────────────────────────
+
+const DocumentVault = () => {
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("All");
+  const filtered = DOCUMENTS.filter(d =>
+    (typeFilter === "All" || d.type === typeFilter) &&
+    (d.name.toLowerCase().includes(search.toLowerCase()) || d.property.toLowerCase().includes(search.toLowerCase()))
+  );
+  const docIcon = (type) => {
+    if (type === "LOI" || type === "PSA" || type === "Closing") return "📄";
+    if (type === "Due Diligence") return "🔍";
+    return "📁";
+  };
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Document Vault</h2>
+          <p style={{ color: "#94a3b8", fontSize: 14 }}>{DOCUMENTS.length} documents across active deals</p>
+        </div>
+        <button className="btn-gold" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Icon name="upload" size={14} /> Upload
+        </button>
+      </div>
+
+      <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+        <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
+          <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}><Icon name="search" size={14} /></span>
+          <input type="text" placeholder="Search documents..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: "100%", paddingLeft: 34 }} />
+        </div>
+        <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+          <option>All</option><option>LOI</option><option>PSA</option><option>Due Diligence</option><option>Closing</option>
+        </select>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+        {filtered.map(doc => (
+          <div key={doc.id} className="card" style={{ padding: 16, cursor: "pointer", transition: "border-color 0.2s" }} onMouseEnter={e => e.currentTarget.style.borderColor = "#f59e0b"} onMouseLeave={e => e.currentTarget.style.borderColor = "#334155"}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <div style={{ background: "#0f172a", borderRadius: 8, padding: 10, fontSize: 20, lineHeight: 1, flexShrink: 0 }}>{docIcon(doc.type)}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 600, fontSize: 13, color: "#e2e8f0", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.name}</div>
+                <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <Icon name="building" size={10} style={{ display: "inline" }} /> {doc.property}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <TypeBadge type={doc.type} />
+                    <StatusBadgeInline status={doc.status} />
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+                  <span style={{ fontSize: 11, color: "#64748b" }}>{doc.date} · {doc.size}</span>
+                  <button className="btn-outline" style={{ padding: "4px 10px", fontSize: 11, display: "flex", alignItems: "center", gap: 4 }}>
+                    <Icon name="download" size={10} /> Download
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── ANALYTICS DASHBOARD ─────────────────────────────────────────────────────
+
+const AnalyticsDashboard = () => {
+  const pipelineTotal = Object.values(PIPELINE).flat().reduce((acc, d) => acc + parseFloat(d.size.replace('$','').replace('M','')), 0);
+  const activeDeals = PIPELINE["Prospecting"].length + PIPELINE["LOI Sent"].length + PIPELINE["Due Diligence"].length + PIPELINE["Under Contract"].length;
+  const closedVal = PIPELINE["Closed"].reduce((acc, d) => acc + parseFloat(d.size.replace('$','').replace('M','')), 0);
+  const avgDays = 67;
+
+  const stats = [
+    { label: "Total Pipeline Value", val: `$${pipelineTotal.toFixed(1)}M`, sub: "Across all stages", icon: "trending", delta: "+12.4% MoM" },
+    { label: "Active Deals", val: activeDeals, sub: "In progress", icon: "pipeline", delta: `+${activeDeals - 3} this month` },
+    { label: "Closed YTD", val: `$${closedVal.toFixed(1)}M`, sub: "2 transactions", icon: "check", delta: "On target" },
+    { label: "Avg. Days to Close", val: avgDays, sub: "Rolling 12 months", icon: "clock", delta: "-8 days vs prior yr" },
+  ];
+
+  const stageData = Object.entries(PIPELINE).map(([stage, deals]) => ({
+    stage,
+    count: deals.length,
+    val: deals.reduce((a, d) => a + parseFloat(d.size.replace('$','').replace('M','')), 0),
+  }));
+
+  const maxVal2 = Math.max(...stageData.map(s => s.val));
+  const chartH2 = 160, chartW2 = 500, padL2 = 40, padB2 = 40, padT2 = 10;
+  const innerW = chartW2 - padL2 - 20;
+  const innerH = chartH2 - padT2 - padB2;
+  const barW2 = innerW / stageData.length * 0.55;
+
+  const typeBreakdown = ["Office", "Industrial", "Retail"].map(t => {
+    const props = PROPERTIES.filter(p => p.type === t);
+    const val = props.reduce((a, p) => a + parseFloat(p.price.replace('$','').replace('M','')), 0);
+    return { type: t, count: props.length, val: val.toFixed(1) };
+  });
+
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9", marginBottom: 4 }}>Analytics Dashboard</h2>
+        <p style={{ color: "#94a3b8", fontSize: 14 }}>Portfolio overview — as of May 2025</p>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 16, marginBottom: 24 }}>
+        {stats.map(s => (
+          <div key={s.label} className="stat-card">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+              <span style={{ fontSize: 11, color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{s.label}</span>
+              <div style={{ background: "#f59e0b22", borderRadius: 6, padding: 6, color: "#f59e0b" }}><Icon name={s.icon} size={14} /></div>
+            </div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: "#f59e0b", marginBottom: 4 }}>{s.val}</div>
+            <div style={{ fontSize: 11, color: "#64748b", marginBottom: 6 }}>{s.sub}</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "#4ade80" }}>{s.delta}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        <div className="card" style={{ padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", marginBottom: 16 }}>Pipeline by Stage ($M)</h3>
+          <svg viewBox={`0 0 ${chartW2} ${chartH2}`} style={{ width: "100%" }}>
+            {[0, 20, 40].map(v => {
+              const y = padT2 + innerH - (v / maxVal2) * innerH;
+              return (
+                <g key={v}>
+                  <line x1={padL2} y1={y} x2={chartW2 - 20} y2={y} stroke="#1e293b" strokeWidth="1" />
+                  <text x={padL2 - 4} y={y + 4} fill="#64748b" fontSize="9" textAnchor="end">{v}M</text>
+                </g>
+              );
+            })}
+            {stageData.map((s, i) => {
+              const bH = (s.val / maxVal2) * innerH;
+              const x = padL2 + i * (innerW / stageData.length) + (innerW / stageData.length - barW2) / 2;
+              const stageColors = ["#60a5fa", "#fbbf24", "#c084fc", "#f472b6", "#4ade80"];
+              return (
+                <g key={s.stage}>
+                  <rect x={x} y={padT2 + innerH - bH} width={barW2} height={bH} rx="3" fill={stageColors[i]} opacity="0.85" />
+                  <text x={x + barW2 / 2} y={chartH2 - 2} fill="#64748b" fontSize="8" textAnchor="middle">{s.stage.replace(' ', '\n')}</text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+
+        <div className="card" style={{ padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", marginBottom: 16 }}>Portfolio by Asset Class</h3>
+          {typeBreakdown.map((t, i) => {
+            const pct = Math.round((parseFloat(t.val) / PROPERTIES.reduce((a, p) => a + parseFloat(p.price.replace('$','').replace('M','')), 0)) * 100);
+            const cols = ["#60a5fa", "#f59e0b", "#4ade80"];
+            return (
+              <div key={t.type} style={{ marginBottom: 16 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>{t.type}</span>
+                  <span style={{ fontSize: 12, color: "#94a3b8" }}>{t.count} props · <span style={{ color: "#f59e0b", fontWeight: 700 }}>${t.val}M</span></span>
+                </div>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${pct}%`, background: cols[i] }}></div>
+                </div>
+                <div style={{ textAlign: "right", fontSize: 10, color: "#64748b", marginTop: 2 }}>{pct}% of portfolio</div>
+              </div>
+            );
+          })}
+
+          <div style={{ borderTop: "1px solid #334155", paddingTop: 16, marginTop: 4 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: 12, color: "#64748b" }}>Total Tracked Value</span>
+              <span style={{ fontSize: 16, fontWeight: 800, color: "#f59e0b" }}>
+                ${PROPERTIES.reduce((a, p) => a + parseFloat(p.price.replace('$','').replace('M','')), 0).toFixed(1)}M
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card" style={{ padding: 20 }}>
+        <h3 style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", marginBottom: 16 }}>Recent Activity</h3>
+        <div>
+          {[
+            { icon: "📝", text: "LOI executed for 789 Pacific Blvd", sub: "2 days ago · Sarah Chen (Blackstone)", color: "#60a5fa" },
+            { icon: "🔍", text: "Phase I ESA completed — 2200 Boundary Rd", sub: "3 days ago · Environmental review passed", color: "#4ade80" },
+            { icon: "🤝", text: "PSA signed — 980 Howe St, Vancouver", sub: "5 days ago · Under Contract at $9.8M", color: "#c084fc" },
+            { icon: "✅", text: "Closed: 7491 Vantage Way, Delta", sub: "Mar 22 · $22.6M Industrial", color: "#4ade80" },
+            { icon: "📊", text: "Financial model updated — 400 Burrard St", sub: "Today · Updated NOI projections", color: "#fbbf24" },
+          ].map((item, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 0", borderBottom: i < 4 ? "1px solid #1e293b" : "none" }}>
+              <div style={{ fontSize: 18, lineHeight: 1, marginTop: 1 }}>{item.icon}</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>{item.text}</div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{item.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── MAIN APP ────────────────────────────────────────────────────────────────
+
+const NAV_ITEMS = [
+  { id: "analytics", label: "Dashboard", icon: "analytics" },
+  { id: "pipeline", label: "Pipeline", icon: "pipeline" },
+  { id: "properties", label: "Properties", icon: "database" },
+  { id: "investors", label: "Investors", icon: "investors" },
+  { id: "market", label: "Market", icon: "market" },
+  { id: "docs", label: "Documents", icon: "docs" },
+];
+
+export default function App() {
+  const [active, setActive] = useState("analytics");
+
+  const renderScreen = () => {
+    if (active === "pipeline") return <DealPipeline />;
+    if (active === "properties") return <PropertyDatabase />;
+    if (active === "investors") return <InvestorNetwork />;
+    if (active === "market") return <MarketIntelligence />;
+    if (active === "docs") return <DocumentVault />;
+    return <AnalyticsDashboard />;
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#0f172a", display: "flex" }}>
+      {/* Sidebar — desktop */}
+      <div className="sidebar-desktop" style={{ width: 240, flexShrink: 0, background: "#0a1120", borderRight: "1px solid #1e293b", flexDirection: "column", position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 40 }}>
+        <div style={{ padding: "24px 20px 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+            <div style={{ background: "#f59e0b", borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "#0f172a", fontWeight: 800, fontSize: 15 }}>C</span>
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: "#f1f5f9", letterSpacing: "-0.01em" }}>CREDesk</div>
+              <div style={{ fontSize: 10, color: "#64748b", fontWeight: 500 }}>by VancouverAISolutions</div>
+            </div>
+          </div>
+        </div>
+        <div style={{ padding: "0 12px", flex: 1, overflowY: "auto" }}>
+          <div style={{ fontSize: 10, color: "#334155", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "8px 4px", marginBottom: 4 }}>Navigation</div>
+          {NAV_ITEMS.map(item => (
+            <div key={item.id} className={`sidebar-item${active === item.id ? " active" : ""}`} onClick={() => setActive(item.id)}>
+              <Icon name={item.icon} size={16} />
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ padding: "16px 20px", borderTop: "1px solid #1e293b" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg, #f59e0b, #d97706)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13, color: "#0f172a" }}>MP</div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0" }}>Mike Payne</div>
+              <div style={{ fontSize: 11, color: "#64748b" }}>Senior Broker</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div style={{ flex: 1, marginLeft: 0, display: "flex", flexDirection: "column" }} className="main-content">
+        {/* Desktop offset */}
+        <div style={{ display: "none" }} className="lg-sidebar-offset"></div>
+        <style>{`@media (min-width: 1024px) { .main-content { margin-left: 240px; } }`}</style>
+
+        {/* Top bar */}
+        <div style={{ background: "#0a1120", borderBottom: "1px solid #1e293b", padding: "0 24px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 30 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {/* Mobile logo */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }} className="mobile-logo">
+              <div style={{ background: "#f59e0b", borderRadius: 6, width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "#0f172a", fontWeight: 800, fontSize: 13 }}>C</span>
+              </div>
+              <span style={{ fontWeight: 800, fontSize: 15, color: "#f1f5f9" }}>CREDesk</span>
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ position: "relative" }}>
+              <span style={{ position: "absolute", left: 9, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}><Icon name="search" size={13} /></span>
+              <input type="text" placeholder="Quick search…" style={{ paddingLeft: 30, width: 200, background: "#1e293b", border: "1px solid #334155", color: "#e2e8f0", borderRadius: 8, padding: "6px 10px 6px 30px", fontSize: 13 }} />
+            </div>
+            <button style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", position: "relative" }}>
+              <Icon name="bell" size={18} />
+              <span style={{ position: "absolute", top: -2, right: -2, width: 8, height: 8, background: "#f59e0b", borderRadius: "50%", border: "1.5px solid #0a1120" }}></span>
+            </button>
+            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #f59e0b, #d97706)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 11, color: "#0f172a", cursor: "pointer" }}>MP</div>
+          </div>
+        </div>
+
+        {/* Page content */}
+        <div style={{ padding: 28, flex: 1, overflowY: "auto" }} className="scrollbar-thin">
+          {renderScreen()}
+        </div>
+      </div>
+
+      {/* Bottom nav — mobile */}
+      <nav className="bottom-nav" style={{ justifyContent: "space-around" }}>
+        {NAV_ITEMS.map(item => (
+          <button key={item.id} onClick={() => setActive(item.id)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, padding: "10px 4px", background: "none", border: "none", cursor: "pointer", color: active === item.id ? "#f59e0b" : "#64748b", transition: "color 0.15s" }}>
+            <Icon name={item.icon} size={18} />
+            <span style={{ fontSize: 9, fontWeight: 600 }}>{item.label}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
 </html>
